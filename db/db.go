@@ -12,7 +12,7 @@ import (
 var Client *mongo.Client
 
 func DbConnection() error {
-	clientOptions := options.Client().ApplyURI("mongodb+srv://armornurik:Qwerty31537597@cluster.3qjtl56.mongodb.net/")
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 	var err error
 	Client, err = mongo.Connect(context.Background(), clientOptions)
 	if err != nil {

@@ -5,6 +5,5 @@ import (
 )
 
 func main() {
-	// раним сервак
 	cmd.RunServer()
 }

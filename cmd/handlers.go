@@ -37,9 +37,9 @@ func teachLoginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, fmt.Sprintf("/teach/%s", teacher.ID.Hex()), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/teacher/%s", teacher.ID.Hex()), http.StatusSeeOther)
 	} else {
-		renderTemplate(w, "vollogin.html", nil)
+		renderTemplate(w, "teacherlogin.html", nil)
 	}
 }
 
@@ -74,9 +74,9 @@ func teachRegHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		insertedID := result.InsertedID.(primitive.ObjectID)
-		http.Redirect(w, r, fmt.Sprintf("/teach/%s", insertedID.Hex()), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/teacher/%s", insertedID.Hex()), http.StatusSeeOther)
 	} else {
-		renderTemplate(w, "volreg.html", nil)
+		renderTemplate(w, "teacherreg.html", nil)
 	}
 }
 
@@ -85,7 +85,7 @@ func studLogHandler(w http.ResponseWriter, r *http.Request) {
 		phone := r.FormValue("phone")
 		password := r.FormValue("password")
 
-		collection := db.Client.Database("SantaWeb").Collection("children")
+		collection := db.Client.Database("Learn").Collection("student")
 		var student Student
 		err := collection.FindOne(context.Background(), bson.M{"phone": phone}).Decode(&student)
 		if err != nil {
@@ -101,9 +101,9 @@ func studLogHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, fmt.Sprintf("/stud/%s", student.ID.Hex()), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/student/%s", student.ID.Hex()), http.StatusSeeOther)
 	} else {
-		renderTemplate(w, "chilog.html", nil)
+		renderTemplate(w, "studentlogin.html", nil)
 	}
 }
 
@@ -138,9 +138,9 @@ func studRegHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		insertedID := result.InsertedID.(primitive.ObjectID)
-		http.Redirect(w, r, fmt.Sprintf("/stud/%s", insertedID.Hex()), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/student/%s", insertedID.Hex()), http.StatusSeeOther)
 	} else {
-		renderTemplate(w, "chireg.html", nil)
+		renderTemplate(w, "studentreg.html", nil)
 	}
 }
 
@@ -153,7 +153,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
 	t.Execute(w, data)
 }
 
-func volunteerPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
+func teacherPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	teacherID := vars["id"]
 
@@ -167,10 +167,10 @@ func volunteerPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	renderTemplate(w, "vol.html", teacher)
+	renderTemplate(w, "teacher.html", teacher)
 }
 
-func childPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
+func studentPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	studID := vars["id"]
 
@@ -184,7 +184,7 @@ func childPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	renderTemplate(w, "chil.html", studID)
+	renderTemplate(w, "student.html", studID)
 }
 
 func sendJSONResponse(w http.ResponseWriter, data interface{}, statusCode int) {
