@@ -155,7 +155,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
 
 func teacherPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	teacherID := vars["id"]
+	teacherID := vars["_id"]
 
 	var teacher Teacher
 	collection := db.Client.Database("Learn").Collection("teachers")
@@ -172,7 +172,7 @@ func teacherPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 
 func studentPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	studID := vars["id"]
+	studID := vars["_id"]
 
 	var student Student
 	collection := db.Client.Database("Learn").Collection("students")
