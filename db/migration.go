@@ -8,15 +8,13 @@ import (
 )
 
 func CreateIndexes() error {
-	// Установка опций клиента
-	clientOptions := options.Client().ApplyURI("mongodb+srv://armornurik:Qwerty31537597@cluster.3qjtl56.mongodb.net/")
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
 		return err
 	}
 	defer client.Disconnect(context.Background())
 
-	// Создание индексов для коллекции "volunteers"
 	studentCollection := client.Database("Learn").Collection("students")
 	_, err = studentCollection.Indexes().CreateOne(
 		context.Background(),
@@ -29,7 +27,6 @@ func CreateIndexes() error {
 		return err
 	}
 
-	// Создание индексов для коллекции "children"
 	teacherCollection := client.Database("Learn").Collection("teachers")
 	_, err = teacherCollection.Indexes().CreateOne(
 		context.Background(),

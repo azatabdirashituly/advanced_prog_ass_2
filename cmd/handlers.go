@@ -85,7 +85,7 @@ func studLogHandler(w http.ResponseWriter, r *http.Request) {
 		phone := r.FormValue("phone")
 		password := r.FormValue("password")
 
-		collection := db.Client.Database("Learn").Collection("student")
+		collection := db.Client.Database("Learn").Collection("students")
 		var student Student
 		err := collection.FindOne(context.Background(), bson.M{"phone": phone}).Decode(&student)
 		if err != nil {
@@ -129,7 +129,7 @@ func studRegHandler(w http.ResponseWriter, r *http.Request) {
 			Password:  string(hashedPassword),
 		}
 
-		collection := db.Client.Database("Learn").Collection("student")
+		collection := db.Client.Database("Learn").Collection("students")
 
 		result, err := collection.InsertOne(context.Background(), student)
 		if err != nil {
@@ -157,16 +157,19 @@ func teacherPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	teacherID := vars["_id"]
 
+	objID, err := primitive.ObjectIDFromHex(teacherID)
+    if err != nil {
+        http.Error(w, "Invalid teacher ID format", http.StatusBadRequest)
+        return
+    }
+
 	var teacher Teacher
 	collection := db.Client.Database("Learn").Collection("teachers")
-	objID, _ := primitive.ObjectIDFromHex(teacherID)
-
-	err := collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&teacher)
+	err = collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&teacher)
 	if err != nil {
 		http.Error(w, "Teacher not found", http.StatusNotFound)
 		return
 	}
-
 	renderTemplate(w, "teacher.html", teacher)
 }
 
@@ -174,11 +177,15 @@ func studentPersonalPageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	studID := vars["_id"]
 
+	objID, err := primitive.ObjectIDFromHex(studID)
+    if err != nil {
+        http.Error(w, "Invalid teacher ID format", http.StatusBadRequest)
+        return
+    }
+
 	var student Student
 	collection := db.Client.Database("Learn").Collection("students")
-	objID, _ := primitive.ObjectIDFromHex(studID)
-
-	err := collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&student)
+	err = collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&student)
 	if err != nil {
 		http.Error(w, "student not found", http.StatusNotFound)
 		return
